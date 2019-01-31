@@ -9,7 +9,7 @@ jdk 'java1.8.0'
 }
 stages
 {
-satge('Build')
+stage('Build')
 {
 steps
 {

@@ -37,8 +37,8 @@ stages
   {
     steps
     {
-      sh 'scp -o StrictHostKeyChecking=no -i /tmp/my.pem target/my-app-2.1-SNAPSHOT.jar centos@34.214.222.25:/tmp/'
-      sh 'ssh -i /tmp/my.pem centos@34.214.222.25 java -jar /tmp/my-app-2.1-SNAPSHOT.jar'
+      sh 'scp -o StrictHostKeyChecking=no -i /tmp/my.pem target/my-app-2.1-SNAPSHOT.jar centos@34.214.222.45:/tmp/'
+      sh 'ssh -i /tmp/my.pem centos@34.214.222.45 java -jar /tmp/my-app-2.1-SNAPSHOT.jar'
       sh 'java -jar /tmp/my-app-2.1-SNAPSHOT.jar'
     }
   }

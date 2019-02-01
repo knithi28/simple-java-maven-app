@@ -1,60 +1,54 @@
-pipeline
-{
+pipeline{
+
 agent any
 
-tools 
-{
-  maven 'maven3.6.0'
-  jdk 'java1.8.0'
-}
-stages 
-{
-stage('Clone'){
-steps{
-git branch: 'master', url:"https://github.com/dvinoth19/simple-java-maven-app.git"
-}
+tools{
+
+maven 'maven3.6.0'
+
+jdk 'java1.8.0'
+
 }
 
-stage('Artifactory Configuration'){
+stages{
+
+stage('Build'){
+
 steps{
-rtServer(
-id: "ARTIFACTORY_SERVICE",
-url: "http://54.202.246.243:8081/artifactory",
-credentialsId: "artifactory_info"
-)
-rtMavenDeployer(
-id: "MAVEN_DEPLOYER",
-serverId: "ARTIFACTORY_SERVICE",
-releaseRepo: "libs-release-local",
-snapshotRepo: "libs-snapshot-local"
-)
-rtMavenResolver(
-id: "MAVEN_RESOLVER",
-serverId: "ARTIFACTORY_SERVICE",
-releaseRepo: "libs-release",
-snapshotRepo: "libs-snapshot"
-)
-}
+
+sh "mvn -B -DskipTests clean package"
+
 }
 
-stage('Exec Maven'){
-steps{
-rtMavenRun(
-tool: 'maven3.6.0',
-pom: 'pom.xml',
-goals: 'clean install',
-deployerId: "MAVEN_DEPLOYER",
-resolverId: "MAVEN_RESOLVER"
-)
-}
 }
 
-stage('Publish build info'){
+stage('Test'){
+
 steps{
-rtPublishBuildInfo(
-serverId: "ARTIFACTORY_SERVICE"
-)
+
+sh "mvn test"
+
 }
-} 
+
+post{
+
+always{
+
+junit 'target/surefire-reports/*.xml'
+
+}
+
+}
+
+}
+
+stage ('Deploy'){
+
+steps {
+
+sh 'java -jar target/my-app-1.0-SNAPSHOT.jar'
+
+}
+}
 }
 }
